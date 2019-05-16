@@ -14,7 +14,7 @@ Rebeca Mora, Marcela Hernandez-Jimenez, Marcela Alfaro-C√≥rdoba, Esteban Avenda√
 
 * [Code to analyze the data]()
 
-* [Code to produce other plots not included]()
+* [Code to produce other plots not included in the paper]()
 
 ### Cite:
 
