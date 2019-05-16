@@ -12,9 +12,9 @@ Rebeca Mora, Marcela Hernandez-Jimenez, Marcela Alfaro-C√≥rdoba, Esteban Avenda√
 
 * [Code to read the data](https://github.com/malfaro2/Mora_et_al/blob/master/01_read_data.R)
 
-* [Code to analyze the data]()
+* [Code to analyze the data](https://github.com/malfaro2/Mora_et_al/blob/master/02_code_analysis.R)
 
-* [Code to produce other plots not included in the paper]()
+* [Code to produce other plots not included in the paper](https://github.com/malfaro2/Mora_et_al/blob/master/03_code_extraplots.R)
 
 ### Cite:
 
