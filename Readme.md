@@ -8,9 +8,9 @@ Rebeca Mora, Marcela Hernandez-Jimenez, Marcela Alfaro-C√≥rdoba, Esteban Avenda√
 
 ### Contents:
 
-* [Data]()
+* [Data](https://github.com/malfaro2/Mora_et_al/tree/master/Datos_April)
 
-* [Code to read the data]()
+* [Code to read the data](https://github.com/malfaro2/Mora_et_al/blob/master/01_read_data.R)
 
 * [Code to analyze the data]()
 
