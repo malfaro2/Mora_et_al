@@ -82,6 +82,16 @@ aa<-lm(deltaE ~ as.factor(speq) * as.factor(colq) +
 summary(aa)
 xtable((aa))
 
+all_data$spe1<-factor(all_data$spe1,
+                      labels=orord2[-4])
+all_data$spe1<-factor(all_data$spe1,
+                      levels=alord2[-9])
+
+all_data$spe2<-factor(all_data$spe2,
+                      labels=orord2[-4])
+all_data$spe2<-factor(all_data$spe2,
+                      levels=alord2[-9])
+
 ## Figure 4:
 p <- ggplot(all_data, aes(x=as.factor(colq), 
                           y=deltaE, 
