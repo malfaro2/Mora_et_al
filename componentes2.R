@@ -63,7 +63,8 @@ head(datall)
 
 # Components plot:
 
-components_plot <- function(espectro1,espectro2,xout,cie){
+components_plot <- function(espectro1,espectro2,
+                            espectro3,espectro4,xout,cie){
   
   # paso 1: interpolar cie y espectros en el mismo rango
   # y graficar para verificar
@@ -73,8 +74,10 @@ components_plot <- function(espectro1,espectro2,xout,cie){
                    spline(cie$V1,cie$V3,xout=xout)[[2]],
                    spline(cie$V1,cie$V4,xout=xout)[[2]],
                    spline(espectro1$X,espectro1$Y, xout=xout)[[2]],
-                   spline(espectro2$X,espectro2$Y, xout=xout)[[2]])
-  colnames(all_inter) <- c("lambda","cieX","cieY","cieZ","spectra1","spectra2")
+                   spline(espectro2$X,espectro2$Y, xout=xout)[[2]],
+                   spline(espectro3$X,espectro3$Y, xout=xout)[[2]],
+                   spline(espectro4$X,espectro4$Y, xout=xout)[[2]])
+  colnames(all_inter) <- c("lambda","cieX","cieY","cieZ","spectra1","spectra2","spectra3","spectra4")
   all_inter <- data.frame(all_inter)
   
   # paso 2: calcular componentes x,y,z para cada spectro (rojo, verde, azul)
@@ -87,21 +90,36 @@ components_plot <- function(espectro1,espectro2,xout,cie){
   Y2verde <- all_inter$spectra2*all_inter$cieY / sum(all_inter$spectra2*all_inter$cieY)
   Z2azul <- all_inter$spectra2*all_inter$cieZ / sum(all_inter$spectra2*all_inter$cieZ)
   
-  rojo  <- cbind(X1rojo,X2rojo)
-  verde <- cbind(Y1verde,Y2verde)
-  azul  <- cbind(Z1azul,Z2azul)
+  X3rojo <- all_inter$spectra3*all_inter$cieX / sum(all_inter$spectra3*all_inter$cieX)
+  Y3verde <- all_inter$spectra3*all_inter$cieY / sum(all_inter$spectra3*all_inter$cieY)
+  Z3azul <- all_inter$spectra3*all_inter$cieZ / sum(all_inter$spectra3*all_inter$cieZ)
+  
+  X4rojo <- all_inter$spectra4*all_inter$cieX / sum(all_inter$spectra4*all_inter$cieX)
+  Y4verde <- all_inter$spectra4*all_inter$cieY / sum(all_inter$spectra4*all_inter$cieY)
+  Z4azul <- all_inter$spectra4*all_inter$cieZ / sum(all_inter$spectra4*all_inter$cieZ)
+  
+  rojo  <- cbind(X1rojo,X2rojo,X3rojo,X4rojo)
+  verde <- cbind(Y1verde,Y2verde,Y3verde, Y4verde)
+  azul  <- cbind(Z1azul,Z2azul,Z3azul, Z4azul)
   
   
   out <- data.frame(cbind(rojo, verde, azul))
-  names(out) <- c("ROJO1", "ROJO2", "VERDE1", "VERDE2", "AZUL1", "AZUL2")
+  names(out) <- c("ROJO1", "ROJO2", "ROJO3","ROJO4",
+                  "VERDE1", "VERDE2","VERDE3","VERDE4",
+                  "AZUL1", "AZUL2", "AZUL3", "AZUL4")
   matplot(out, type='l')
   return(out)
 }
 
 caso1 <- which(dat$especie=="a"&dat$BOB=="black"&dat$spot=="s1"&dat$muestra==1)
-caso2 <- which(dat$especie=="s"&dat$BOB=="orange"&dat$spot=="s1"&dat$muestra==1)
+caso2 <- which(dat$especie=="a"&dat$BOB=="orange"&dat$spot=="s1"&dat$muestra==1)
+caso3 <- which(dat$especie=="t"&dat$BOB=="black"&dat$spot=="s1"&dat$muestra==1)
+caso4 <- which(dat$especie=="t"&dat$BOB=="orange"&dat$spot=="s1"&dat$muestra==1)
 espectro_ej1<-dat[caso1,c("X","Y")]
 espectro_ej2<-dat[caso2,c("X","Y")]
+espectro_ej3<-dat[caso3,c("X","Y")]
+espectro_ej4<-dat[caso4,c("X","Y")]
 
-aa<-components_plot(espectro_ej1,espectro_ej2,xout,cie)
-save(aa, file="RGBplot.Rdata")
+aa<-components_plot(espectro_ej1,espectro_ej2,
+                    espectro_ej3,espectro_ej4,
+                    xout,cie)

@@ -17,14 +17,26 @@ load(file="factores.Rdata")
 aa<-dat %>% group_by(especie,BOB) %>% summarise(mean=mean(Y)) %>% arrange(especie,BOB) %>% dcast(especie ~ BOB, value.var = "mean") 
 dat0 <- dat %>% dcast(X+especie+muestra+spot+dia~BOB, value.var = "Y") %>% mutate(dif=black-orange) %>% arrange(especie,muestra,spot)
 
+# Change Laphita (LA) for Opisthacantha (OP)
+# And, when possible use most of the name:
+# \textit{Acanthoscelio} (AC), \textit{Baryconus} (BA), \textit{Chromoteleia} (CR), \textit{Macroteleia} (MA), \textit{Opisthacantha} (OP), \textit{Scelio} (SC), \textit{Sceliomorpha} (SM) and \textit{Triteleia}
+
+orord2<-c("AC","BA","CR","EV",
+          "OP","MA","SC","SM",'TR')
+alord2<-c("AC","BA","CR","MA","OP",
+          "SC","SM",'TR',"EV")
+
+orord4<-c("Acanthoscelio","Baryconus","Chromoteleia",
+          "Evaniella","Opisthacantha","Macroteleia",
+          "Scelio","Sceliomorpha",'Triteleia')
+alord4<-c("Acanthoscelio","Baryconus","Chromoteleia",
+          "Macroteleia","Opisthacantha","Scelio",
+          "Sceliomorpha",'Triteleia',"Evaniella")
+
 ## Figure 2:
-tiff("Figures/Fig2.tiff", units="in", width=15, 
-     height=5, res=300)
 datg <- dat %>% mutate(especie = 
-        factor(especie, labels = 
-  c("AC","BA","CR","EV","LA","MA","SC","SM",'TR')))%>% 
-  mutate(especie = factor(especie, levels = 
-  c("AC","BA","CR","LA","MA","SC","SM",'TR',"EV")))
+        factor(especie, labels = orord4))%>% 
+  mutate(especie = factor(especie, levels = alord4))
 pp <- ggplot(datg, aes(X, Y, colour = BOB))+ 
   geom_line(size=0.9) + stat_summary(aes(group=BOB),
     fun.y = "mean", color="black",size = 0.5, 
@@ -33,27 +45,29 @@ pp <- ggplot(datg, aes(X, Y, colour = BOB))+
   theme_bw() + xlab(expression(lambda)) +
   ylab(expression(Z~"("~lambda~")")) +
   theme(axis.text.x = element_text(angle = 90))
-pp + facet_grid(BOB ~ especie)
-#pp +  facet_grid_paginate(BOB ~ especie, ncol = 3, 
-#                          nrow = 2)#, page = 1)
-#pp +  facet_grid_paginate(BOB ~ especie, ncol = 3, 
-#                          nrow = 2)#, page = 2)
-#pp +  facet_grid_paginate(BOB ~ especie, ncol = 3, 
-#                          nrow = 2)#, page = 3)
+
+tiff("Figures/Fig2.tiff", units="in", width=9, 
+     height=3.2, res=300)
+pp + facet_grid(BOB ~ especie) +
+  theme(legend.position = "none") 
 dev.off()
 
 ## Figure 3:
-dat0g <- dat0 %>% mutate(genera = factor(especie, labels = 
-      c("AC","BA","CR","EV","LA","MA","SC","SM",'TR')))%>% 
-  mutate(genera = factor(genera, levels = 
-      c("AC","BA","CR","LA","MA","SC","SM",'TR',"EV")))
-tiff("Figures/Fig3.tiff", units="in", width=10, 
-     height=5, res=300)
+dat0g <- dat0 %>% mutate(genera = 
+         factor(especie, labels = orord4))%>% 
+  mutate(especie = factor(especie, levels = alord4))
 pp1 <- ggplot(dat0g, aes(X, dif, colour = genera))+ 
-  geom_line(size=0.09) +
+  geom_line(size=0.01) +
   stat_summary(aes(group=genera, colour=genera),
     fun.y = "mean",size = 1, geom = "line") + 
-  ylab("Difference Curves") 
+  ylab("Difference Curves") +
+  stat_summary(aes(group=genera, colour=genera),
+    fun.y = "max",size = 0.15, geom = "line", linetype = "dashed") + 
+  stat_summary(aes(group=genera, colour=genera),
+    fun.y = "min",size = 0.15, geom = "line", linetype = "dashed") + 
+  ylab("Difference Curves")
+tiff("Figures/Fig3.tiff", units="in", width=7, 
+     height=3, res=300)
 pp1 + geom_hline(yintercept=0, linetype="dashed", 
                  color="black", size=1)+ 
   theme_bw() + xlab(expression(lambda)) +
@@ -79,9 +93,9 @@ p <- ggplot(all_data, aes(x=as.factor(colq),
        fill= "",
        x= "From different color? No = 0, Yes = 1" ) + theme_bw() +
   geom_hline(yintercept=2.3, linetype="dashed", color = "red")
-tiff("Figures/Fig4.tiff", units="in", width=15, 
-     height=15, res=300)
-p
+tiff("Figures/Fig4.tiff", units="in", width=8, 
+     height=8, res=200)
+p + theme(legend.position = "none")
 dev.off()
 
 ## Figure 5:
@@ -90,11 +104,17 @@ all_data2 <- all_data
 all_data2$col1[cambio2]<-all_data$col2[cambio2]
 all_data2$col2[cambio2]<-all_data$col1[cambio2]
 
+
+
+all_data2 <-all_data2 %>% mutate(colone = 
+factor(col1, labels = c("Black","Orange"))) %>%    
+mutate(coltwo = 
+factor(col2, labels = c("Black","Orange")))
+
 q <- ggplot(all_data2, aes(x=as.factor(speq), 
                            y=deltaE, 
-                           #color=as.factor(colq),
                            fill= as.factor(speq))) + 
-  geom_violin() + facet_grid(col1~col2)+ theme_bw() +
+  geom_violin() + facet_grid(colone~coltwo)+ theme_bw() +
   geom_boxplot(width=0.1) +
   labs(y=expression(Delta~"E"),
        fill= "",
@@ -103,15 +123,13 @@ q <- ggplot(all_data2, aes(x=as.factor(speq),
 
 tiff("Figures/Fig5.tiff", units="in", width=5, 
      height=5, res=300)
-q
+q + theme(legend.position = "none")
 dev.off()
 
 ## Figure 8
 dat0c <- dat0 %>% 
-  mutate(genera = factor(especie, labels = 
-  c("AC","BA","CR","EV","LA","MA","SC","SM",'TR')))%>% 
-  mutate(genera = factor(genera, levels = 
-  c("AC","BA","CR","LA","MA","SC","SM",'TR',"EV")))
+  mutate(genera = factor(especie, labels = orord4))%>% 
+  mutate(especie = factor(especie, levels = alord4))
 cc0 <- dat0c %>% group_by(genera, muestra, spot) %>% 
   summarise(Y1 = mean(dif))
 bp <- ggplot(cc0, aes(x=genera, y=Y1, colour=genera)) + 
@@ -119,10 +137,10 @@ bp <- ggplot(cc0, aes(x=genera, y=Y1, colour=genera)) +
   labs(title="",x="Genera", y = "Difference in Mean 
        Reflectance between Orange and Black") + 
   theme_bw() 
-tiff("Figures/Fig8.tiff", units="in", width=10, 
-     height=5, res=300)
+tiff("Figures/Fig8.tiff", units="in", width=7.5, 
+     height=4, res=300)
 bp + geom_hline(yintercept=0, linetype="dashed", 
-                color = "black", size=1)
+                color = "black", size=1)+ theme(legend.position = "none")
 dev.off()
 
 # Table 5
@@ -183,7 +201,7 @@ summary(aa)
 
 ## Constrasts:
 dat0 <- dat0 %>% mutate(genera = factor(especie, 
-  labels = c("AC","BA","CR","EV","LA","MA","SC","SM",'TR')))
+  labels = orord4))
 group <- rep(unique(dat0$genera),each=12)
 a<-plotFANOVA(x = t(mdata), group.label=group, means=TRUE)
 a 
@@ -219,7 +237,7 @@ xtable(head(aam1[-mismos_gen,], n=10))
 # Calculate the distance between curves per component
 # source(file=components.R)
 load(file="dist_data.Rdata")
-
+orord4
 selec <- all_data$spe1%in%c("AC", "BA", "TR")&
   all_data$spe2%in%c("AC", "BA", "TR")
 
@@ -233,7 +251,7 @@ p <- ggplot(all_data[selec,], aes(x=as.factor(colq),
   labs(y="GREEN distance",
        fill= "",
        x= "From different color? NO = 0, YES = 1" ) + 
-  theme_bw() 
+  theme_bw() + theme(legend.position = "none")
 
 q <- ggplot(all_data[selec,], aes(x=as.factor(colq), 
                                   y=dist_rojo, 
@@ -243,7 +261,7 @@ q <- ggplot(all_data[selec,], aes(x=as.factor(colq),
   labs(y="RED distance",
        fill= "",
        x= "From different color? NO = 0, YES = 1" ) + 
-  theme_bw() 
+  theme_bw() + theme(legend.position = "none")
 
 r <- ggplot(all_data[selec,], aes(x=as.factor(colq), 
                                   y=dist_azul, 
@@ -253,23 +271,22 @@ r <- ggplot(all_data[selec,], aes(x=as.factor(colq),
   labs(y="BLUE distance",
        fill= "",
        x= "From different color? NO = 0, YES = 1" ) + 
-  theme_bw() 
+  theme_bw() + theme(legend.position = "none")
 
 ## Gráfico de RGB: 
 
-dat<-aa %>% gather() %>% mutate(x=rep(xout,6)) %>% 
+source(file="componentes2.R")
+dat<-aa %>% gather() %>% mutate(x=rep(xout,12)) %>% 
   mutate(RGB=factor(key, 
-      levels=c("ROJO1","ROJO2", "VERDE1", 
-               "VERDE2","AZUL1", "AZUL2"),
-      labels=c("Red AC-B","Red SM-O", "Green AC-B", 
-               "Green SM-O","Blue AC-B", "Blue SM-O")))
+      levels=c("ROJO1","ROJO2","ROJO3","ROJO4",
+               "VERDE1", "VERDE2","VERDE3","VERDE4",
+               "AZUL1", "AZUL2","AZUL3", "AZUL4"),
+labels=c("Red AC-B","Red AC-O","Red TR-B","Red TR-O", 
+"Green AC-B", "Green AC-O","Green TR-B","Green TR-O",
+"Blue AC-B", "Blue AC-O","Blue TR-B", "Blue TR-O")))
 
 datO<-dat %>% mutate(linea = 
-      str_extract(RGB, "[^ ]+$")) %>% 
-  mutate(color = 
-      substr(RGB, start = 1, stop = 4)) %>% 
-  mutate(color = factor(color, levels=
-      c("Blue","Red","Green")))
+      str_extract(RGB, "[^ ]+$"))
 
 s <- ggplot(data=datO, aes(x=x,y=value, color=RGB)) +
   geom_line( ) + 
@@ -277,18 +294,17 @@ s <- ggplot(data=datO, aes(x=x,y=value, color=RGB)) +
   labs(x=expression(lambda), 
        y=expression(RGB(lambda))) + 
   theme(legend.justification=c("left", "top"),
-        legend.position = c(.70, .85))
+        legend.position = c(.76, .95))
 
 tiff("Figures/Fig6.tiff", units="in", width=12, 
-     height=8, res=300)
-ggarrange(p, q, r, s,
+     height=8, res=160)
+ggarrange(q, p, r, s,
           labels = c("(A)", "(B)", "(C)", "(D)"),
           ncol = 2, nrow = 2)
 dev.off()
 
 # Area under the curve and maximum per component
 
-source(file="componentes2.R")
 # lambda in which we find maximum spectra:
 
 datamean<- datall %>% 
@@ -311,23 +327,21 @@ datamean3 <- datall %>%
 
 datamean4 <- datamean3%>%
   group_by(SP, Component, CO) %>%
-  summarise(X=median(X),
-            areaSpec=median(areaSpec)) %>%
+  mutate(X=median(X),
+  areaSpec=median(areaSpec)) %>%
   arrange(Component)
 
+datamean4$genera<-factor(datamean4$SP,labels=orord2)
+datamean4$genera<-factor(datamean4$genera,labels=orord4)
+
 datamean4 <- datamean4 %>% 
-mutate(genera = factor(SP, levels = 
-       levels(factor(datamean4$SP)))) %>% 
-mutate(genera = factor(genera, levels = 
-       c("AC","BA","CR","LA","MA",
-         "SC","SM",'TR',"EV")))
+mutate(genera = factor(genera, levels = alord4))
+
+datamean3$genera<-factor(datamean3$SP,labels=orord2)
+datamean3$genera<-factor(datamean3$genera,labels=orord4)
 
 datamean3 <- datamean3 %>% 
-  mutate(genera = factor(SP, levels = 
-      levels(factor(datamean3$SP)))) %>% 
-  mutate(genera = factor(genera, levels = 
-       c("AC","BA","CR","LA","MA",
-         "SC","SM",'TR',"EV")))
+  mutate(genera = factor(genera, levels = alord4))
 
 ## Figure 7
 
@@ -336,7 +350,7 @@ p1<-ggplot(datamean3[datamean3$CO=="BL",],
   geom_point(alpha=1/3) + 
   facet_grid(.~Component, scales="free_x")+
   stat_summary(data=datamean4[datamean4$CO=="BL",],
-               fun.y = "mean",size = 4, 
+               fun.y = "mean",size = 3, 
                geom = "point", shape=16)+
   scale_y_log10() +
   theme_bw()+
@@ -349,7 +363,7 @@ p2<-ggplot(datamean3[datamean3$CO=="OR",],
   geom_point(alpha=1/3) + 
   facet_grid(.~Component, scales="free_x") +
   stat_summary(data=datamean4[datamean4$CO=="OR",],
-               fun.y = "mean",size = 4, 
+               fun.y = "mean",size = 3, 
                geom = "point", shape=16)+
   scale_y_log10() +
   theme_bw() +
@@ -357,9 +371,20 @@ p2<-ggplot(datamean3[datamean3$CO=="OR",],
   xlab(expression(lambda~"["~max~Spectra~"]"))
 #  ggtitle("Scatter Plot, for all ORANGE observations")
 
-tiff("Figures/Fig7.tiff", units="in", width=8, 
-     height=8, res=300)
-ggarrange(p1, p2,
-          labels = c("(A)", "(B)"),
-          ncol = 1, nrow = 2)
+p12<-ggplot(datamean3,
+       aes(x=X, y=areaSpec, col=genera)) + 
+  geom_point(alpha=1/5) + 
+  facet_grid(CO~Component, scales="free")+
+  stat_summary(data=datamean4,
+               fun.y = "mean",size = 3, 
+               geom = "point", shape=16)+
+  scale_y_log10() +
+  theme_bw()+
+  ylab("log (Area under the curve)")+
+  xlab(expression(lambda~"["~max~Spectra~"]"))
+
+
+tiff("Figures/Fig7.tiff", units="in", width=5.8, 
+     height=4.3, res=300)
+p12
 dev.off()
