@@ -18,4 +18,4 @@ Rebeca Mora, Marcela Hernandez-Jimenez, Marcela Alfaro-C√≥rdoba, Esteban Avenda√
 
 ### Cite:
 
-If you find this code useful in your research, please, consider citing our paper.
+If you find this code useful in your research, please, consider citing our paper: https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0218061
