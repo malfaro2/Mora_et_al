@@ -4,7 +4,7 @@
 
 This is the code for the paper :
 
-Rebeca Mora, Marcela Hernandez-Jimenez, Marcela Alfaro-Córdoba, Esteban Avendaño-Soto, and Paul Hanson (2019). Spectral measure of color variation of black - orange - black (BOB) pattern in Hymenoptera (Scelionidae), a statistical approach. Submitted to PLOS One.
+Mora-Castro R, Hernández-Jiménez M, Alfaro-Córdoba M, Avendano E, Hanson-Snortum P (2019) Spectral measure of color variation of black-orange-black (BOB) pattern in small parasitoid wasps (Hymenoptera: Scelionidae), a statistical approach. PLoS ONE 14(10): e0218061. https://doi.org/10.1371/journal.pone.0218061
 
 ### Contents:
 
