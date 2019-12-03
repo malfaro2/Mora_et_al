@@ -19,3 +19,5 @@ Mora-Castro R, Hernández-Jiménez M, Alfaro-Córdoba M, Avendano E, Hanson-Snor
 ### Cite:
 
 If you find this code useful in your research, please, consider citing our paper: https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0218061
+
+[![DOI](https://zenodo.org/badge/187072612.svg)](https://zenodo.org/badge/latestdoi/187072612)
